@@ -61,28 +61,27 @@ export default function produtos({ navigation }) {
         horizontal
         style={styles.lista}
       >
-
-          {produtos.map((produto) => (
-            <TouchableOpacity
-              style={styles.item}
-              key={produto.id}
-              onPress={() => navigation.navigate("Item", { item: produto })}
-            >
-              <Image source={{ uri: produto.imagem }} style={styles.imagem} />
-              <View style={styles.info}>
+        {produtos.map((produto) => (
+          <TouchableOpacity
+            style={styles.item}
+            key={produto.id}
+            onPress={() => navigation.navigate("Item", { item: produto })}
+          >
+            <Image source={{ uri: produto.imagem }} style={styles.imagem} />
+            <View style={styles.info}>
+              <View>
                 <Text numberOfLines={2} style={styles.titulo}>
                   {produto.nome}
                 </Text>
-                <View style={styles.itemPreco}>
-                  <Text style={styles.preco}>{produto.preco}</Text>
-                  <Text style={styles.precoAntigo}>{produto.preco}</Text>
-                  <MaterialIcons name="local-offer" size={15} color="#000" />
-                </View>
+                <Text style={styles.preco}> R$ {produto.preco}</Text>
               </View>
-            </TouchableOpacity>
-          ))}
-          <Button title="Atualizar" onPress={() => updateProdutos()} />
-
+              <View>
+                <Button title="+" />
+              </View>
+            </View>
+          </TouchableOpacity>
+        ))}
+        <Button title="Atualizar" onPress={() => updateProdutos()} />
       </ScrollView>
     </View>
   );
@@ -118,22 +117,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: "rbga(0,0,0, 0.06)",
-    borderRadius: 4,
+    borderRadius: 12,
+    alignItems: "center",
   },
   imagem: {
+    marginTop: 5,
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderRadius: 12,
     height: 120,
-    width: 200,
-    backgroundColor: "#000",
+    width: 190,
+    backgroundColor: "#fff",
   },
   info: {
     marginTop: "auto",
     padding: 10,
-  },
-  itemPreco: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 10,
+    
   },
   preco: {
     color: "green",
