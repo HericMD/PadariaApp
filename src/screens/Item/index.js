@@ -10,6 +10,7 @@ export default function Item({ route, navigation }) {
     <ScrollView showsVerticalScrollIndicator={true} style={styles.container}>
       <Image style={styles.itemImage} source={{ uri: item.imagem }} />
       <Text style={styles.itemTitulo}>{item.nome}</Text>
+      <Text style={styles.itemDesc}>{item.descricao}</Text>
       <Text style={styles.itemPreco}>R$ {item.preco}</Text>
     </ScrollView>
   );
@@ -28,8 +29,15 @@ const styles = StyleSheet.create({
     fontSize: 32,
     color: "#333",
     fontWeight: "bold",
-    marginTop: 10,
-    marginLeft: 5,
+    marginTop: 5,
+    marginLeft: 10,
+  },
+  itemDesc: {
+    fontSize: 15,
+    color: "#333",
+    fontWeight: "bold",
+    marginTop: 0,
+    marginLeft: 10,
   },
   itemPreco: {
     color: "green",

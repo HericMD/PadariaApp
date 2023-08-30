@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { MaterialIcons } from '@expo/vector-icons';
+import React, { useEffect, useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
 import {
   Image,
   ScrollView,
@@ -7,20 +7,17 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
-} from 'react-native';
+  Button,
+} from "react-native";
 
-import api from '../../services/api';
-import { formatNumber } from '../../helpers/formatNumber';
+import produtoService from "../../services/produtos";
 
+export default function produtos({ navigation }) {
+  const [produtos, setProdutos] = useState([]);
   useEffect(async () => {
     const data = await produtoService.getAllProdutos();
     setProdutos(data);
   }, []);
-
-  async function updateProdutos() {
-    const data = await produtoService.getAllProdutos();
-    setProdutos(data);
-  }
 
   return (
     <View style={styles.container}>
@@ -36,23 +33,19 @@ import { formatNumber } from '../../helpers/formatNumber';
           <TouchableOpacity
             key={produto.id}
             style={styles.item}
-            key={oferta.id}
-            onPress={() => navigation.navigate('Item', { item: oferta })}
+            onPress={() => navigation.navigate("Item", { item: produto })}
           >
             <Image source={{ uri: produto.imagem }} style={styles.imagem} />
             <View style={styles.info}>
               <Text numberOfLines={2} style={styles.titulo}>
-                {oferta.title}
+                {produto.nome}
               </Text>
               <View style={styles.itemPreco}>
-                <Text style={styles.preco}>{oferta.newPrice}</Text>
-                <Text style={styles.precoAntigo}>{oferta.price}</Text>
-                <MaterialIcons name="local-offer" size={15} color="#000" />
+                <Text style={styles.preco}>R$ {produto.preco}</Text>
               </View>
             </View>
           </TouchableOpacity>
         ))}
-        <Button title="Atualizar" onPress={() => updateProdutos()} />
       </ScrollView>
     </View>
   );
@@ -86,35 +79,27 @@ const styles = StyleSheet.create({
     width: 200,
     marginRight: 15,
     borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: 'rbga(0,0,0, 0.06)',
-    borderRadius: 4,
+    borderStyle: "solid",
+    borderColor: "rbga(0,0,0, 0.06)",
+    backgroundColor: "white",
+    borderRadius: 12,
   },
   imagem: {
+    resizeMode: 'contain',
     height: 120,
     width: 190,
+    borderRadius: 12,
+    marginLeft: 'auto',
+    marginRight: "auto",
     backgroundColor: "#fff",
   },
   info: {
     marginTop: "auto",
     padding: 10,
   },
-  itemPreco: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
   preco: {
     color: "green",
     fontWeight: "bold",
     fontSize: 18,
-  },
-  precoAntigo: {
-    marginLeft: 5,
-    fontWeight: 'bold',
-    color: '#999',
-    fontSize: 16,
-    textDecorationLine: 'line-through',
   },
 });
