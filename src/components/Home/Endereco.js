@@ -5,6 +5,10 @@ import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 export default function Endereco() {
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.menuEndereco}>
+        <Text style={styles.localizacao}>Próximo de minha casa...</Text>
+        <MaterialIcons name="keyboard-arrow-down" size={20} color={'#FF5665'} />
+      </TouchableOpacity>
     </View>
   );
 }

@@ -8,12 +8,12 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { MaterialIcons } from "@expo/vector-icons";
 
 import Home from "./screens/Home";
-import Busca from "./screens/Busca";
 import Perfil from "./screens/Perfil";
 import Pedidos from "./screens/Pedidos";
 import PedidosAnteriores from "./screens/PedidosAnteriores";
 import Pagamentos from "./screens/Pagamentos";
 import Item from "./screens/Item";
+import Categoriaitem from "./screens/Categoriaitem"
 import { StyleSheet } from "react-native-web";
 
 const BottomTab = createBottomTabNavigator();
@@ -29,6 +29,7 @@ function HomeRoutes() {
     >
       <Stack.Screen name=" " component={Home} />
       <Stack.Screen name="Item" component={Item} />
+      <Stack.Screen name="Categoria" component={Categoriaitem} />
     </Stack.Navigator>
   );
 }

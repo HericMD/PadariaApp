@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Image,
   ScrollView,
@@ -6,18 +6,16 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
-} from 'react-native';
-import api from '../../services/api';
+} from "react-native";
 
-export default function Categorias() {
+import categoriaService from "../../services/categorias";
+
+export default function categorias({ navigation }) {
   const [categorias, setCategorias] = useState([]);
 
-  useEffect(() => {
-    async function carregarCategorias() {
-      const response = await api.get('categories');
-      setCategorias(response.data);
-    }
-    carregarCategorias();
+  useEffect(async () => {
+    const data = await categoriaService.getAllCategorias();
+    setCategorias(data);
   }, []);
 
   return (
@@ -31,12 +29,15 @@ export default function Categorias() {
         style={styles.lista}
       >
         {categorias.map((categoria) => (
-          <TouchableOpacity key={categoria.id} style={styles.item}>
-            <Image
-              source={{ uri: categoria.categorie_url }} 
-              style={styles.imagem}
-            />
-            <Text style={styles.categoriaTitulo}>{categoria.title}</Text>
+          <TouchableOpacity
+            key={categoria.id}
+            style={styles.item}
+            onPress={() =>
+              navigation.navigate("Categoriaitem", { categoriaitem: categoria })
+            }
+          >
+            <Image source={{ uri: categoria.imagem }} style={styles.imagem} />
+            <Text style={styles.categoriaTitulo}>{categoria.descricao}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
   },
   titulo: {
     fontSize: 23,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   lista: {
     marginTop: 10,
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
   },
   item: {
     marginRight: 15,
-    alignItems: 'center',
+    alignItems: "center",
   },
   imagem: {
     width: 200,
@@ -70,8 +71,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   categoriaTitulo: {
-    fontSize: 16,
+    fontSize: 20,
     marginTop: 10,
-    color: '#999',
+    color: "white",
+    backgroundColor: "black",
+    borderStyle: "solid",
+    borderColor: "rbga(0,0,0, 0.06)",
+    borderRadius: 5,
+    paddingTop: 0,
+    paddingRight: 4,
+    paddingBottom: 2,
+    paddingLeft: 4,
   },
 });
