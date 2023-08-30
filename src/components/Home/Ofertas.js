@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
 import {
   Image,
   ScrollView,
@@ -6,17 +7,20 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
-} from "react-native";
+} from 'react-native';
 
-import produtoService from "../../services/produtos";
-
-export default function produtos({ navigation }) {
-  const [produtos, setProdutos] = useState([]);
+import api from '../../services/api';
+import { formatNumber } from '../../helpers/formatNumber';
 
   useEffect(async () => {
     const data = await produtoService.getAllProdutos();
     setProdutos(data);
   }, []);
+
+  async function updateProdutos() {
+    const data = await produtoService.getAllProdutos();
+    setProdutos(data);
+  }
 
   return (
     <View style={styles.container}>
@@ -32,19 +36,23 @@ export default function produtos({ navigation }) {
           <TouchableOpacity
             key={produto.id}
             style={styles.item}
-            onPress={() => navigation.navigate("Item", { item: produto })}
+            key={oferta.id}
+            onPress={() => navigation.navigate('Item', { item: oferta })}
           >
             <Image source={{ uri: produto.imagem }} style={styles.imagem} />
             <View style={styles.info}>
-              <View>
-                <Text numberOfLines={2} style={styles.titulo}>
-                  {produto.nome}
-                </Text>
-                <Text style={styles.preco}> R$ {produto.preco}</Text>
+              <Text numberOfLines={2} style={styles.titulo}>
+                {oferta.title}
+              </Text>
+              <View style={styles.itemPreco}>
+                <Text style={styles.preco}>{oferta.newPrice}</Text>
+                <Text style={styles.precoAntigo}>{oferta.price}</Text>
+                <MaterialIcons name="local-offer" size={15} color="#000" />
               </View>
             </View>
           </TouchableOpacity>
         ))}
+        <Button title="Atualizar" onPress={() => updateProdutos()} />
       </ScrollView>
     </View>
   );
@@ -78,16 +86,11 @@ const styles = StyleSheet.create({
     width: 200,
     marginRight: 15,
     borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "rbga(0,0,0, 0.06)",
-    borderRadius: 12,
-    backgroundColor: "white",
+    borderStyle: 'solid',
+    borderColor: 'rbga(0,0,0, 0.06)',
+    borderRadius: 4,
   },
   imagem: {
-    resizeMode: "contain",
-    borderRadius: 12,
-    marginLeft: "auto",
-    marginRight: "auto",
     height: 120,
     width: 190,
     backgroundColor: "#fff",
@@ -96,9 +99,22 @@ const styles = StyleSheet.create({
     marginTop: "auto",
     padding: 10,
   },
+  itemPreco: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
+  },
   preco: {
     color: "green",
     fontWeight: "bold",
     fontSize: 18,
+  },
+  precoAntigo: {
+    marginLeft: 5,
+    fontWeight: 'bold',
+    color: '#999',
+    fontSize: 16,
+    textDecorationLine: 'line-through',
   },
 });
