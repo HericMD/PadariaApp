@@ -22,11 +22,11 @@ export default function enderecos() {
   }, []);
 
   async function adicionar() {
-      if (endereco.id) {
-        await enderecoService.updateEndereco(data);
-      } else {
-        await enderecoService.saveEndereco(data);
-      }
+    if (endereco.id) {
+      await enderecoService.updateEndereco(data);
+    } else {
+      await enderecoService.saveEndereco(endereco);
+    }
     setEnderecos({});
 
     const data = await enderecoService.getAllEnderecos();
@@ -48,29 +48,31 @@ export default function enderecos() {
       <View>
         <Text>Adicione endereços:</Text>
 
-        <View>
+        <View style={styles.addendereco}>
           <TextInput
             style={styles.input}
-            value={enderecos.numero}
-            onChangeText={(text) => setEnderecos({ ...endereco, numero: text})}
+            value={endereco.numero}
+            onChangeText={(text) => setEndereco({ ...endereco, numero: text })}
             placeholder=" Número"
             keyboardType="numeric"
           />
           <TextInput
             style={styles.input}
-            value={enderecos.complemento}
-            onChangeText={(text) => setEnderecos({ ...endereco, complemento: text})}
+            value={endereco.complemento}
+            onChangeText={(text) =>
+              setEndereco({ ...endereco, complemento: text })
+            }
             placeholder=" Complemento"
           />
           <TextInput
             style={styles.input}
-            value={enderecos.cep}
-            onChangeText={(text) => setEnderecos({ ...endereco, cep: text})}
+            value={endereco.cep}
+            onChangeText={(text) => setEndereco({ ...endereco, cep: text })}
             placeholder=" Cep"
             keyboardType="numeric"
           />
 
-          <Button title="ADD" onPress={adicionar} />
+          <Button style={styles.add} title="ADD" onPress={adicionar} />
         </View>
       </View>
 
@@ -87,19 +89,26 @@ export default function enderecos() {
           </View>
         ))}
       </View> */}
-      <FlatList
-        data={enderecos}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View>
-            <Text onPress={() => editar(item)}>
-            {/* <Text> */}
-              {item.numero} - {item.complemento} - {item.cep}
-            </Text>
-            <Button title="X" onPress={() => excluir(item)} />
-          </View>
-        )}
-      />
+      <View style={styles.listaendereco}>
+        <Text>Seus endereços: </Text>
+        <FlatList
+          style={styles.lista}
+          data={enderecos}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.enderecos}>
+              <Text onPress={() => editar(item)}>
+                {item.numero} - {item.complemento} - {item.cep}
+              </Text>
+              <Button
+                style={styles.excluirbutton}
+                title="Excluir"
+                onPress={() => excluir(item)}
+              />
+            </View>
+          )}
+        />
+      </View>
     </View>
   );
 }
@@ -110,14 +119,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffc187",
     // alignItems: "center",
   },
+  addendereco: {
+    alignItems: "center",
+    paddingBottom: 15,
+  },
   input: {
-    backgroundColor: "white",
     marginTop: 13,
-    marginRight: 13,
     marginBottom: 5,
-    marginLeft: 13,
     padding: 5,
     borderRadius: 13,
     color: "gray",
+  },
+  lista: {
+    
+  },
+  enderecos: {
+    backgroundColor: "white",
+    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
   },
 });
