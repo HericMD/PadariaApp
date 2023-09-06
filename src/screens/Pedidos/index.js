@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 export default function Pedidos() {
   return (
@@ -12,7 +12,7 @@ export default function Pedidos() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E1A166',
+    backgroundColor: '#ffc187',
     alignItems: 'center',
     justifyContent: 'center',
   },

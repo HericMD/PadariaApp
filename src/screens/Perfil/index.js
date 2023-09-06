@@ -51,12 +51,14 @@ export default function Perfil({ navigation }) {
           </ScrollView>
           <MaterialIcons name="keyboard-arrow-right" color="black" size={20} />
         </TouchableOpacity>
-
-        <TouchableOpacity style={styles.option} onPress={() => {}}>
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => navigation.navigate('Enderecos')}
+        >
           <MaterialCommunityIcons name="map-marker" size={35} color="black" />
           <ScrollView style={styles.info}>
             <Text style={styles.title}>Endereços</Text>
-            <Text style={styles.description}>Meus endereços de entrega</Text>
+            <Text style={styles.description}>Meus endreços de entrega</Text>
           </ScrollView>
           <MaterialIcons name="keyboard-arrow-right" color="black" size={20} />
         </TouchableOpacity>
@@ -110,7 +112,7 @@ export default function Perfil({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E1A166',
+    backgroundColor: '#ffc187',
   },
   option: {
     flexDirection: 'row',

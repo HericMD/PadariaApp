@@ -14,6 +14,7 @@ import produtoService from "../../services/produtos";
 
 export default function produtos({ navigation }) {
   const [produtos, setProdutos] = useState([]);
+  
   useEffect(async () => {
     const data = await produtoService.getAllProdutos();
     setProdutos(data);

@@ -10,10 +10,10 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Home from "./screens/Home";
 import Perfil from "./screens/Perfil";
 import Pedidos from "./screens/Pedidos";
-import PedidosAnteriores from "./screens/PedidosAnteriores";
 import Pagamentos from "./screens/Pagamentos";
 import Item from "./screens/Item";
-import Categoriaitem from "./screens/Categoriaitem"
+import Categoriaitem from "./screens/Categoriaitem";
+import Enderecos from "./screens/Enderecos";
 import { StyleSheet } from "react-native-web";
 
 const BottomTab = createBottomTabNavigator();
@@ -36,31 +36,42 @@ function HomeRoutes() {
 
 function PedidosRouter() {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Pedidos" component={Pedidos} />
-      <Tab.Screen
-        name="PedidosAnteriores"
-        component={PedidosAnteriores}
-        options={{ tabBarLabel: "Pedidos Anteriores" }}
-      />
-    </Tab.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="Pedidos" component={Pedidos} />
+    </Stack.Navigator>
   );
 }
 
 function PerfilRoutes() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Perfil" component={Perfil} 
-      options={{
-        headerStyle: { backgroundColor: 'black' },
-        headerTitleStyle: { color: 'white' }
-      }}
+      <Stack.Screen
+        name="Perfil"
+        component={Perfil}
+        options={{
+          headerStyle: { backgroundColor: "black" },
+          headerTitleStyle: { color: "white" },
+        }}
       />
-      <Stack.Screen name="Pagamentos" component={Pagamentos} 
-      options={{
-        headerStyle: { backgroundColor: 'black' },
-        headerTitleStyle: { color: 'white' }
-      }}
+      <Stack.Screen
+        name="Pagamentos"
+        component={Pagamentos}
+        options={{
+          headerStyle: { backgroundColor: "black" },
+          headerTitleStyle: { color: "white" },
+        }}
+      />
+      <Stack.Screen
+        name="Enderecos"
+        component={Enderecos}
+        options={{
+          headerStyle: { backgroundColor: "black" },
+          headerTitleStyle: { color: "white" },
+        }}
       />
     </Stack.Navigator>
   );
@@ -91,7 +102,7 @@ export default function Routes() {
           }}
         />
         <BottomTab.Screen
-          name="PedidosRouter"
+          name="Pedidos"
           component={PedidosRouter}
           options={{
             headerStyle: { backgroundColor: "black" },

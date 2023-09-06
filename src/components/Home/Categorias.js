@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 30,
     marginHorizontal: 0,
+    // alignItems: "center",
   },
   header: {
     marginLeft: 20,
