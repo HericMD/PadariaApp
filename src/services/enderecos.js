@@ -14,7 +14,7 @@ class EnderecoService {
     return response.data
   }
   async updateEndereco(endereco) {
-    const response = await api.put(`/endereco.id/${endereco.id}/`, endereco);
+    const response = await api.put(`/endereco/${endereco.id}/`, endereco);
     return response.data
   }
 }
