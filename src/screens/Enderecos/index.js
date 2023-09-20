@@ -8,6 +8,8 @@ import {
   StyleSheet,
   Button,
   FlatList,
+  Image,
+  Touchable,
 } from "react-native";
 
 import enderecoService from "../../services/enderecos";
@@ -78,16 +80,35 @@ export default function enderecos() {
       <ScrollView>
         <View style={styles.listaendereco}>
           <Text>Seus endereços: </Text>
+
           <FlatList
             data={enderecos}
             keyExtractor={(item) => item.toString()}
             renderItem={({ item }) => (
               <View style={styles.enderecos}>
                 <Text>
-                  {item.id} - {item.numero} - {item.complemento} - {item.cep}
+                  <li>Cep: {item.cep}</li>
+                  <li>Complemento: {item.complemento}</li>
+                  <li>Múmero: {item.numero}</li>
                 </Text>
-                <Text onPress={() => excluir(item)}>Excloi</Text>
-                <Text onPress={() => editar(item)}>Edit</Text>
+                <View style={styles.botoes}>
+                  <TouchableOpacity onPress={() => editar(item)}>
+                    <Image
+                      source={{
+                        uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Edit_icon_%28the_Noun_Project_30184%29.svg/2048px-Edit_icon_%28the_Noun_Project_30184%29.svg.png",
+                      }}
+                      style={styles.imagem}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => excluir(item)}>
+                    <Image
+                      source={{
+                        uri: "https://cdn.iconscout.com/icon/free/png-512/free-bin-2782756-2316163.png?f=avif&w=256",
+                      }}
+                      style={styles.imagem}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
           />
@@ -119,8 +140,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   enderecos: {
-    // alignItems: "center",
-    // flexDirection: "row",
     display: "flex",
+    // flexDirection: "row",
   },
+  edit: {
+    backgroundColor: "yellow",
+  },
+  delete: {
+    backgroundColor: "red",
+    color: "white",
+    marginLeft: 6,
+    marginRight: 6,
+    paddingLeft: 3,
+    paddingRight: 3,
+    borderRadius: 60,
+  },
+  imagem: {
+    width: 30,
+    height: 30,
+  },
+  botoes:{
+    flexDirection: 'row',
+  }
 });

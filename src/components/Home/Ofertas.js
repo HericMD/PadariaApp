@@ -30,6 +30,7 @@ export default function produtos({ navigation }) {
         horizontal
         style={styles.lista}
       >
+
         {produtos.map((produto) => (
           <TouchableOpacity
             key={produto.id}
