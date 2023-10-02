@@ -37,7 +37,7 @@ export default function produtos({ navigation }) {
             style={styles.item}
             onPress={() => navigation.navigate("Item", { item: produto })}
           >
-            <Image source={{ uri: produto.imagem }} style={styles.imagem} />
+            <Image source={{ uri: produto.imagem.file }} style={styles.imagem} />
             <View style={styles.info}>
               <Text numberOfLines={2} style={styles.titulo}>
                 {produto.nome}
