@@ -3,9 +3,9 @@ import { StyleSheet, View } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import * as SecureStore from 'expo-secure-store';
 import { useSetRecoilState } from 'recoil';
+import loginApi from '../../services/login';
+import { userState } from '../../recoil/atoms/auth';
 
-import loginApi from '../services/login';
-import { userState } from '../recoil/atoms/auth';
 export default function Login({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -39,14 +39,16 @@ export default function Login({ navigation }) {
         label="Usuário"
         style={{ width: '90%', marginBottom: 10 }}
         value={username}
+        placeholder = "aluno"
         onChangeText={setUsername}
       />
       <TextInput
-        label="Password"
+        label="Senha"
         type="password"
         secureTextEntry={true}
         style={{ width: '90%', marginBottom: 10 }}
         value={password}
+        placeholder = "aluno"
         onChangeText={setPassword}
       />
       <Button mode="contained" onPress={() => login()}>

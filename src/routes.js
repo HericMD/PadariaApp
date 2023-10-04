@@ -14,11 +14,41 @@ import Pagamentos from "./screens/Pagamentos";
 import Item from "./screens/Item";
 import Categoriaitem from "./screens/Categoriaitem";
 import Enderecos from "./screens/Enderecos";
+import Login from "./screens/Login";
+import Cadastro from "./screens/Cadastro"
+
 import { StyleSheet } from "react-native-web";
+
+import { useRecoilValue } from "recoil";
+import { userState } from "./recoil/atoms/auth";
 
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
+
+function LoginRouter() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="Login" component={Login} />
+    </Stack.Navigator>
+  );
+}
+
+function CadastroRouter() {
+  return(
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="Cadastro" component={Cadastro} />
+    </Stack.Navigator>
+  )
+}
 
 function HomeRoutes() {
   return (
@@ -77,56 +107,107 @@ function PerfilRoutes() {
   );
 }
 
+
+
+
+
+
+
+
 export default function Routes() {
-  return (
-    <NavigationContainer>
-      <BottomTab.Navigator
-        screenOptions={{
-          tabBarActiveTintColor: "#E06903",
-          tabBarInactiveTintColor: "#fff",
-          tabBarStyle: { backgroundColor: "black" },
-        }}
-      >
-        <BottomTab.Screen
-          name="Padaria Legal :]"
-          component={HomeRoutes}
-          options={{
-            headerStyle: { backgroundColor: "black" },
-            headerTitleStyle: {
-              color: "white",
-            },
-            tabBarLabel: "Início",
-            tabBarIcon: ({ color }) => (
-              <MaterialIcons name="home" color={color} size={26} />
-            ),
+  const currentuserState = useRecoilValue(userState);
+
+  if (currentuserState.loggedIn) {
+
+    return (
+      <NavigationContainer>
+        <BottomTab.Navigator
+          screenOptions={{
+            tabBarActiveTintColor: "#E06903",
+            tabBarInactiveTintColor: "#fff",
+            tabBarStyle: { backgroundColor: "black" },
           }}
-        />
-        <BottomTab.Screen
-          name="Pedidos"
-          component={PedidosRouter}
-          options={{
-            headerStyle: { backgroundColor: "black" },
-            headerTitleStyle: { color: "white" },
-            tabBarLabel: "Pedidos",
-            tabBarIcon: ({ color }) => (
-              <MaterialIcons name="assignment" color={color} size={26} />
-            ),
+        >
+          <BottomTab.Screen
+            name="Padaria Legal :]"
+            component={HomeRoutes}
+            options={{
+              headerStyle: { backgroundColor: "black" },
+              headerTitleStyle: {
+                color: "white",
+              },
+              tabBarLabel: "Início",
+              tabBarIcon: ({ color }) => (
+                <MaterialIcons name="home" color={color} size={26} />
+              ),
+            }}
+          />
+          <BottomTab.Screen
+            name="Pedidos"
+            component={PedidosRouter}
+            options={{
+              headerStyle: { backgroundColor: "black" },
+              headerTitleStyle: { color: "white" },
+              tabBarLabel: "Pedidos",
+              tabBarIcon: ({ color }) => (
+                <MaterialIcons name="assignment" color={color} size={26} />
+              ),
+            }}
+          />
+          <BottomTab.Screen
+            name="PerfilRoutes"
+            component={PerfilRoutes}
+            options={{
+              headerStyle: { backgroundColor: "black" },
+              headerTitleStyle: { color: "white" },
+              headerShown: false,
+              tabBarLabel: "Perfil",
+              tabBarIcon: ({ color }) => (
+                <MaterialIcons name="person" color={color} size={26} />
+              ),
+            }}
+          />
+        </BottomTab.Navigator>
+      </NavigationContainer>
+    );
+  } else {
+    return (
+      <NavigationContainer>
+        <BottomTab.Navigator
+          screenOptions={{
+            tabBarActiveTintColor: "#E06903",
+            tabBarInactiveTintColor: "#fff",
+            tabBarStyle: { backgroundColor: "black" },
           }}
-        />
-        <BottomTab.Screen
-          name="PerfilRoutes"
-          component={PerfilRoutes}
-          options={{
-            headerStyle: { backgroundColor: "black" },
-            headerTitleStyle: { color: "white" },
-            headerShown: false,
-            tabBarLabel: "Perfil",
-            tabBarIcon: ({ color }) => (
-              <MaterialIcons name="person" color={color} size={26} />
-            ),
-          }}
-        />
-      </BottomTab.Navigator>
-    </NavigationContainer>
-  );
+        >
+          <BottomTab.Screen
+            name="Login"
+            component={LoginRouter}
+            options={{
+              headerStyle: { backgroundColor: "black" },
+              headerTitleStyle: {
+                color: "white",
+              },
+              tabBarLabel: "Login",
+              tabBarIcon: ({ color }) => (
+                <MaterialIcons name="home" color={color} size={26} />
+              ),
+            }}
+          />
+          <BottomTab.Screen
+            name="Cadastro"
+            component={CadastroRouter}
+            options={{
+              headerStyle: { backgroundColor: "black" },
+              headerTitleStyle: { color: "white" },
+              tabBarLabel: "Cadastro",
+              tabBarIcon: ({ color }) => (
+                <MaterialIcons name="assignment" color={color} size={26} />
+              ),
+            }}
+          />
+        </BottomTab.Navigator>
+      </NavigationContainer>
+    );
+  }
 }

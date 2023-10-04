@@ -1,4 +1,4 @@
-import api from '../plugins/api';
+import api from './api';
 
 class LoginApi {
   async login(username, password) {

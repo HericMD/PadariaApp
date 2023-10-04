@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ifood-clone",
-    "slug": "ifood-clone",
+    "name": "padaria-app",
+    "slug": "padaria-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
