@@ -36,7 +36,7 @@ export default function categorias({ navigation }) {
               navigation.navigate("Categoriaitem", { categoriaitem: categoria })
             }
           >
-            <Image source={{ uri: categoria.imagem }} style={styles.imagem} />
+            <Image source={{ uri: categoria.imagem.file }} style={styles.imagem} />
             <Text style={styles.categoriaTitulo}>{categoria.descricao}</Text>
           </TouchableOpacity>
         ))}

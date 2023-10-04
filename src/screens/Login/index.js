@@ -24,7 +24,7 @@ export default function Login({ navigation }) {
       setUsername('');
       setPassword('');
       setErrorMsg(null);
-      await SecureStore.setItemAsync('access', data.access);
+      // await SecureStore.setItemAsync('access', data.access);
       navigation.goBack();
     } catch (error) {
       setUser({ loggedIn: false, access: null, refresh: null });
@@ -39,7 +39,6 @@ export default function Login({ navigation }) {
         label="Usuário"
         style={{ width: '90%', marginBottom: 10 }}
         value={username}
-        placeholder = "aluno"
         onChangeText={setUsername}
       />
       <TextInput
@@ -48,7 +47,6 @@ export default function Login({ navigation }) {
         secureTextEntry={true}
         style={{ width: '90%', marginBottom: 10 }}
         value={password}
-        placeholder = "aluno"
         onChangeText={setPassword}
       />
       <Button mode="contained" onPress={() => login()}>

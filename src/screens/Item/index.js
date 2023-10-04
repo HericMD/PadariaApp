@@ -8,7 +8,7 @@ export default function Item({ route, navigation }) {
 
   return (
     <ScrollView showsVerticalScrollIndicator={true} style={styles.container}>
-      <Image style={styles.itemImage} source={{ uri: item.imagem }} />
+      <Image style={styles.itemImage} source={{ uri: item.imagem.file }} />
       <Text style={styles.itemTitulo}>{item.nome}</Text>
       <Text style={styles.itemDesc}>{item.descricao}</Text>
       <Text style={styles.itemPreco}>R$ {item.preco}</Text>
