@@ -4,7 +4,8 @@ export const userState = atom({
   key: 'userState',
   default: {
     isLoading: true,
-    loggedIn: false,
+    // loggedIn: false,
+    loggedIn: true,
     access: null,
     refresh: null,
   },

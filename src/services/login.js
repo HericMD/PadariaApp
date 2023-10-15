@@ -1,10 +1,10 @@
 import api from './api';
 
 class LoginApi {
-  async login(username, password) {
+  async login(email, password) {
     try {
       const { data } = await api.post('/token/', {
-        username,
+        email,
         password,
       });
       return Promise.resolve(data);

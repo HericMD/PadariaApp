@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -10,23 +10,26 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Home from "./screens/Home";
 import Perfil from "./screens/Perfil";
 import Pedidos from "./screens/Pedidos";
-import Pagamentos from "./screens/Pagamentos";
 import Item from "./screens/Item";
-import Categoriaitem from "./screens/Categoriaitem";
+import CategoriaItem from "./screens/CategoriaItem";
 import Enderecos from "./screens/Enderecos";
 import Login from "./screens/Login";
-import Cadastro from "./screens/Cadastro"
+import Cadastro from "./screens/Cadastro";
 
 import { StyleSheet } from "react-native-web";
 
 import { useRecoilValue } from "recoil";
 import { userState } from "./recoil/atoms/auth";
 
+
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
 
+
+
 function LoginRouter() {
+  
   return (
     <Stack.Navigator
       screenOptions={{
@@ -39,7 +42,7 @@ function LoginRouter() {
 }
 
 function CadastroRouter() {
-  return(
+  return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
@@ -47,7 +50,7 @@ function CadastroRouter() {
     >
       <Stack.Screen name="Cadastro" component={Cadastro} />
     </Stack.Navigator>
-  )
+  );
 }
 
 function HomeRoutes() {
@@ -59,7 +62,7 @@ function HomeRoutes() {
     >
       <Stack.Screen name=" " component={Home} />
       <Stack.Screen name="Item" component={Item} />
-      <Stack.Screen name="Categoria" component={Categoriaitem} />
+      <Stack.Screen name="CategoriaItem" component={CategoriaItem} />
     </Stack.Navigator>
   );
 }
@@ -77,19 +80,12 @@ function PedidosRouter() {
 }
 
 function PerfilRoutes() {
+  
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="Perfil"
         component={Perfil}
-        options={{
-          headerStyle: { backgroundColor: "black" },
-          headerTitleStyle: { color: "white" },
-        }}
-      />
-      <Stack.Screen
-        name="Pagamentos"
-        component={Pagamentos}
         options={{
           headerStyle: { backgroundColor: "black" },
           headerTitleStyle: { color: "white" },
@@ -107,18 +103,10 @@ function PerfilRoutes() {
   );
 }
 
-
-
-
-
-
-
-
 export default function Routes() {
   const currentuserState = useRecoilValue(userState);
 
   if (currentuserState.loggedIn) {
-
     return (
       <NavigationContainer>
         <BottomTab.Navigator

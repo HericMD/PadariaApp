@@ -33,7 +33,7 @@ export default function categorias({ navigation }) {
             key={categoria.id}
             style={styles.item}
             onPress={() =>
-              navigation.navigate("Categoriaitem", { categoriaitem: categoria })
+              navigation.navigate("CategoriaItem", { categoriaItem: categoria })
             }
           >
             <Image source={{ uri: categoria.imagem.file }} style={styles.imagem} />
