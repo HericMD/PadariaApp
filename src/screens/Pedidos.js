@@ -68,41 +68,39 @@ export default function Perfil({ navigation }) {
     <ScrollView style={styles.container}>
       <Text>Seus pedidos:</Text>
       <View>
-        {user?.carrinhos.map((carrinho) => (
-          <View key={carrinho.id} style={styles.listacarrinho}>
-            <Text>
-              <li>Carrinho ID {carrinho.id}</li>
-            </Text>
-            {carrinho.produto.map((produto) => (
-              <View key={produto.id} style={styles.listaproduto}>
-                <Image
-                  source={{ uri: produto.imagem.file }}
+        <View style={styles.listacarrinho}>
+          <Text>
+            <li>Carrinho ID {user?.carrinho.id}</li>
+          </Text>
+          {user?.carrinho.item.map((item) => (
+            <View key={item.id} style={styles.listaproduto}>
+              <Image
+                  source={{ uri: item.produto.cover.file }}
                   style={styles.imagem}
                 />
-                <Text>
-                  <li>{produto.nome}</li>
-                  <li>Preço por {produto.unidade}</li>
-                  <li>R$ {produto.preco}</li>
-                  <li>Categoria:{produto.categoria.descricao}</li>
-                </Text>
-                <View>
-                  <Text> Quantidade </Text>
-                  <View style={styles.inputView}>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="1"
-                      keyboardType="numeric"
-                    />
-                  </View>
-                  <View style={styles.botaoView}>
-                    <TouchableOpacity style={styles.botao} >+</TouchableOpacity>
-                    <TouchableOpacity style={styles.botao} >-</TouchableOpacity>
-                  </View>
+              <Text>
+                <li>{item.produto.nome}</li>
+                <li>Preço por {item.produto.unidade}</li>
+                <li>R$ {item.produto.preco}</li>
+                <li>{item.produto.categoria.descricao}</li>
+              </Text>
+              <View>
+                <Text> Quantidade </Text>
+                <View style={styles.inputView}>
+                  <TextInput
+                    style={styles.input}
+                    keyboardType="numeric"
+                    value={item.quantidade}
+                  />
+                </View>
+                <View style={styles.botaoView}>
+                  <TouchableOpacity style={styles.botao}>+</TouchableOpacity>
+                  <TouchableOpacity style={styles.botao}>-</TouchableOpacity>
                 </View>
               </View>
-            ))}
-          </View>
-        ))}
+            </View>
+          ))}
+        </View>
       </View>
     </ScrollView>
   );
@@ -152,18 +150,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     color: "white",
-    backgroundColor: "orange"
+    backgroundColor: "orange",
   },
   input: {
     borderWidth: 1,
     borderRadius: 3,
     padding: 1.5,
-    width: 23,
+    width: 33,
     height: 15,
   },
-  inputView:{
+  inputView: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  }
+  },
 });
