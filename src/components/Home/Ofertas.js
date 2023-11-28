@@ -35,7 +35,7 @@ export default function produtos({ navigation }) {
           <TouchableOpacity
             key={produto.id}
             style={styles.item}
-            onPress={() => navigation.navigate("Item", { item: produto })}
+            onPress={() => navigation.navigate("Item", { prod: produto })}
           >
             <Image source={{ uri: produto.cover.url }} style={styles.imagem} />
             <View style={styles.info}>
