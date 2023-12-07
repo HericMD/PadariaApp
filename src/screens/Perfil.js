@@ -6,61 +6,24 @@ import {
   View,
   StyleSheet,
   Image,
+  Touchable,
 } from "react-native";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
-import * as ImagePicker from "expo-image-picker";
-import usuario from "../services/usuario";
+import LoginApi from "../services/login";
 
 export default function Perfil({ navigation }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const users = await usuario.getAllUsuarios();
-      // const users = await usuario.getUsuarioInfo();
-      setUser(users[0]);
+      const UserLogado = await LoginApi.UserLogado();
+      setUser(UserLogado[0]);
     };
 
     fetchUser();
   }, []);
 
-  const selectImage = async () => {
-    let permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      alert("Você precisa permitir o acesso à galeria para continuar!");
-      return;
-    }
-
-    let pickerResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    });
-
-    if (
-      pickerResult.cancelled ||
-      !pickerResult.assets ||
-      pickerResult.assets.length === 0
-    )
-      return;
-
-    const selectedImage = pickerResult.assets[0];
-
-    try {
-      await usuario.updateUserImage(user.id, selectedImage);
-      const updatedUser = await usuario.getUserById(user.id);
-      setUser(updatedUser);
-    } catch (error) {
-      console.error("Failed to update image:", error);
-      alert("Erro ao atualizar a imagem.");
-    }
-  };
-
-  const handleLogout = async () => {
-    await usuario.logout();
-    navigation.navigate("Login");
-  };
 
   return (
     <ScrollView style={styles.container}>
@@ -83,6 +46,9 @@ export default function Perfil({ navigation }) {
           <Text style={styles.description}>Meus endreços de entrega</Text>
         </ScrollView>
         <MaterialIcons name="keyboard-arrow-right" color="black" size={20} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+        <Text>Sair</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -124,7 +90,7 @@ const styles = StyleSheet.create({
     marginRight: "auto",
   },
   nome: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });

@@ -10,74 +10,90 @@ import {
   TextInput,
 } from "react-native";
 
-import * as ImagePicker from "expo-image-picker";
-import usuario from "../services/usuario";
-// import { TextInput } from "react-native-paper";
+import LoginApi from "../services/login";
+import CarrinhoService from "../services/carrinho";
+import ItemService from "../services/item";
 
-export default function Perfil({ navigation }) {
+export default function Carrinho({ navigation }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
-      const users = await usuario.getAllUsuarios();
-      // const users = await usuario.getUsuarioInfo();
-      setUser(users[0]);
+      const UserLogado = await LoginApi.UserLogado();
+      setUser(UserLogado[0]);
     };
 
     fetchUser();
   }, []);
 
-  const selectImage = async () => {
-    let permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
+  const incrementQuantidade = (itemId) => {
+    const updatedItems = user.carrinho.item.map((item) =>
+      item.id === itemId ? { ...item, quantidade: item.quantidade + 1 } : item
+    );
 
-    if (permissionResult.granted === false) {
-      alert("Você precisa permitir o acesso à galeria para continuar!");
-      return;
-    }
-
-    let pickerResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    });
-
-    if (
-      pickerResult.cancelled ||
-      !pickerResult.assets ||
-      pickerResult.assets.length === 0
-    )
-      return;
-
-    const selectedImage = pickerResult.assets[0];
-
-    try {
-      await usuario.updateUserImage(user.id, selectedImage);
-      const updatedUser = await usuario.getUserById(user.id);
-      setUser(updatedUser);
-    } catch (error) {
-      console.error("Failed to update image:", error);
-      alert("Erro ao atualizar a imagem.");
-    }
+    setUser({ ...user, carrinho: { ...user.carrinho, item: updatedItems } });
   };
 
-  const handleLogout = async () => {
-    await usuario.logout();
-    navigation.navigate("Login");
+  const decrementQuantidade = (itemId) => {
+    const updatedItems = user.carrinho.item.map((item) =>
+      item.id === itemId && item.quantidade > 1
+        ? { ...item, quantidade: item.quantidade - 1 }
+        : item
+    );
+
+    setUser({ ...user, carrinho: { ...user.carrinho, item: updatedItems } });
+  };
+
+  const excluirItem = (itemId) => {
+    const updatedItems = user.carrinho.item.filter(
+      (item) => item.id !== itemId
+    );
+
+    setUser({ ...user, carrinho: { ...user.carrinho, item: updatedItems } });
+  };
+
+  const salvarAlteracoes = async () => {
+    try {
+      // Preparar os dados para o patch no ItemService
+      const itensAtualizados = user.carrinho.item
+        .filter((item) => item.quantidade > 0)
+        .map(({ id, quantidade }) => ({ id, quantidade }));
+  
+      // Realizar o patch no ItemService
+      await Promise.all(itensAtualizados.map(async (itemAtualizado) => {
+        try {
+          // Substitua a linha abaixo pela chamada correta ao seu serviço de update do item
+          await ItemService.updateItem({id: itemAtualizado.id, quantidade: itemAtualizado.quantidade });
+          console.log(`Item ${itemAtualizado.id} atualizado com sucesso.`);
+        } catch (error) {
+          console.error(`Erro ao atualizar o item ${itemAtualizado.id}:`, error);
+        }
+      }));
+  
+      // Realizar o patch no CarrinhoService
+      await CarrinhoService.patchCarrinho({
+        id: user.carrinho.id,
+        item: user.carrinho.item.map(item => item.id),
+        endereco: user.carrinho.endereco.id
+      });
+  
+      console.log("Alterações no carrinho salvas com sucesso!");
+    } catch (error) {
+      console.error("Erro ao salvar alterações no carrinho:", error);
+    }
   };
 
   return (
     <ScrollView style={styles.container}>
-      <Text>Seus pedidos:</Text>
+      <Text>Seu Carrinho:</Text>
       <View>
-        <View style={styles.listacarrinho}>
-          <Text>
-            <li>Carrinho ID {user?.carrinho.id}</li>
-          </Text>
+        <View style={styles.listaCarrinho}>
           {user?.carrinho.item.map((item) => (
-            <View key={item.id} style={styles.listaproduto}>
+            <View key={item.id} style={styles.itemCarrinho}>
               <Image
-                  source={{ uri: item.produto.cover.file }}
-                  style={styles.imagem}
-                />
+                source={{ uri: item.produto.cover.file }}
+                style={styles.imagem}
+              />
               <Text>
                 <li>{item.produto.nome}</li>
                 <li>Preço por {item.produto.unidade}</li>
@@ -91,15 +107,36 @@ export default function Perfil({ navigation }) {
                     style={styles.input}
                     keyboardType="numeric"
                     value={item.quantidade}
+                    onChangeText={(text) =>
+                      incrementQuantidade(item.id, Number(text))
+                    }
                   />
                 </View>
-                <View style={styles.botaoView}>
-                  <TouchableOpacity style={styles.botao}>+</TouchableOpacity>
-                  <TouchableOpacity style={styles.botao}>-</TouchableOpacity>
+                <View style={styles.botoesQuantidade}>
+                  <TouchableOpacity
+                    style={styles.botao}
+                    onPress={() => incrementQuantidade(item.id)}
+                  >
+                    <Text>+</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.botao}
+                    onPress={() => decrementQuantidade(item.id)}
+                  >
+                    <Text>-</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
+              <TouchableOpacity onPress={() => excluirItem(item.id)}>
+                <Text>X</Text>
+              </TouchableOpacity>
             </View>
           ))}
+        </View>
+        <View>
+          <TouchableOpacity onPress={salvarAlteracoes}>
+            <Text>Salvar Alterações no Carrinho</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
@@ -111,13 +148,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffc187",
   },
-  listacarrinho: {
+  listaCarrinho: {
     margin: 5,
     padding: 3,
     borderWidth: 2,
     borderColor: "black",
   },
-  listaproduto: {
+  itemCarrinho: {
     flex: 1,
     flexDirection: "row",
     margin: 5,
@@ -132,8 +169,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 80,
   },
-  botaoView: {
-    flex: 1,
+  botoesQuantidade: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -144,6 +180,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: 16,
     maxWidth: 16,
+
+
     height: 16,
     maxHeight: 16,
     borderRadius: 360,

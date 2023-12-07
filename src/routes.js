@@ -99,6 +99,14 @@ function PerfilRoutes() {
           headerTitleStyle: { color: "white" },
         }}
       />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{
+          headerStyle: { backgroundColor: "black" },
+          headerTitleStyle: { color: "white" },
+        }}
+      />
     </Stack.Navigator>
   );
 }

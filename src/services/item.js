@@ -7,14 +7,14 @@ class ItemService {
   }
   async saveItem(item) {
     const response = await api.post('/item/', item)
-    return response.data
+    return response.data;
   }
   async deleteItem(item) {
     const response = await api.delete(`/item/${item.id}/`)
     return response.data
   }
   async updateItem(item) {
-    const response = await api.put(`/item/${item.id}/`, item);
+    const response = await api.patch(`/item/${item.id}/`, item);
     return response.data
   }
 }

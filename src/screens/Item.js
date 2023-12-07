@@ -8,18 +8,36 @@ import {
   Button,
 } from "react-native";
 
+import LoginApi from "../services/login";
 import itemService from "../services/item";
+import carrinhoService from "../services/carrinho";
+
+const UserLogado = await LoginApi.UserLogado();
 
 export default function Item({ route, navigation }) {
   const { prod } = route.params;
 
   const [items, setItems] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
 
   async function addCart() {
     const item = { produto: prod.id };
-    await itemService.saveItem(item);
+    const newItem = await itemService.saveItem(item);
     setItems({});
 
+    const UserLogado = await LoginApi.UserLogado();
+
+    const listaAtual = UserLogado[0].carrinho.item.map((item) => item.id);
+    const listaProdutosAtuais = UserLogado[0].carrinho.item.map((item) => item.produto.id);
+    if (listaProdutosAtuais.includes(newItem.produto)) {
+      alert("Esse item já está em seu carrinho!");
+    } else {
+      listaAtual.push(newItem.id);
+
+      const itemcarrinho = { id: UserLogado[0].carrinho.id, item: listaAtual, endereco: UserLogado[0].carrinho.endereco.id };
+      await carrinhoService.patchCarrinho(itemcarrinho); 
+      alert("Adicionado ao carrinho com sucesso!");
+    }
   }
 
   return (
