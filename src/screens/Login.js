@@ -3,8 +3,10 @@ import { StyleSheet, View } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import * as SecureStore from 'expo-secure-store';
 import { useSetRecoilState } from 'recoil';
-import loginApi from '../services/login';
 import { userState } from '../recoil/atoms/auth';
+
+import loginApi from '../services/login';
+import CarrinhoApi from '../services/carrinho'
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState('');
@@ -15,7 +17,9 @@ export default function Login({ navigation }) {
 
   const login = async () => {
     try {
-      const data = await loginApi.login(email, password);
+      const data = await loginApi.login("admin@gmail.com", "admin");
+      // const data = await loginApi.login(email, password);
+      // const data = await loginApi.login("novo@gmail.com", "novo");
       setUser({
         loggedIn: true,
         access: data.access,
@@ -25,6 +29,18 @@ export default function Login({ navigation }) {
       setPassword('');
       setErrorMsg(null);
       // await SecureStore.setItemAsync('access', data.access);
+
+      if(true){
+        const UserLogado = await loginApi.UserLogado();
+        console.log("logado!")
+        console.log(UserLogado[0])
+        if(UserLogado[0].carrinho == null){
+          console.log("sem carrinho!")
+          // await CarrinhoApi.saveCarrinho({endereco_carrinho: null, item: [0]})
+        }
+      }
+
+
       navigation.goBack();
     } catch (error) {
       setUser({ loggedIn: false, access: null, refresh: null });

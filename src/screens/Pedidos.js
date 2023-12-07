@@ -13,9 +13,13 @@ import {
 import LoginApi from "../services/login";
 import CarrinhoService from "../services/carrinho";
 import ItemService from "../services/item";
+import ModalEndereco from "../components/ModalEndereco";
+
+const UserLogado = await LoginApi.UserLogado();
 
 export default function Carrinho({ navigation }) {
   const [user, setUser] = useState(null);
+  const [enderecos, setEnderecos] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -26,15 +30,15 @@ export default function Carrinho({ navigation }) {
     fetchUser();
   }, []);
 
-  const incrementQuantidade = (itemId) => {
+  async function incrementQuantidade(itemId) {
     const updatedItems = user.carrinho.item.map((item) =>
       item.id === itemId ? { ...item, quantidade: item.quantidade + 1 } : item
     );
 
     setUser({ ...user, carrinho: { ...user.carrinho, item: updatedItems } });
-  };
+  }
 
-  const decrementQuantidade = (itemId) => {
+  async function decrementQuantidade(itemId) {
     const updatedItems = user.carrinho.item.map((item) =>
       item.id === itemId && item.quantidade > 1
         ? { ...item, quantidade: item.quantidade - 1 }
@@ -42,105 +46,194 @@ export default function Carrinho({ navigation }) {
     );
 
     setUser({ ...user, carrinho: { ...user.carrinho, item: updatedItems } });
-  };
+  }
 
-  const excluirItem = (itemId) => {
+  async function excluirItem(itemId) {
     const updatedItems = user.carrinho.item.filter(
       (item) => item.id !== itemId
     );
 
     setUser({ ...user, carrinho: { ...user.carrinho, item: updatedItems } });
-  };
+  }
 
-  const salvarAlteracoes = async () => {
+  async function salvarAlteracoes() {
     try {
-      // Preparar os dados para o patch no ItemService
       const itensAtualizados = user.carrinho.item
         .filter((item) => item.quantidade > 0)
         .map(({ id, quantidade }) => ({ id, quantidade }));
-  
-      // Realizar o patch no ItemService
-      await Promise.all(itensAtualizados.map(async (itemAtualizado) => {
-        try {
-          // Substitua a linha abaixo pela chamada correta ao seu serviço de update do item
-          await ItemService.updateItem({id: itemAtualizado.id, quantidade: itemAtualizado.quantidade });
-          console.log(`Item ${itemAtualizado.id} atualizado com sucesso.`);
-        } catch (error) {
-          console.error(`Erro ao atualizar o item ${itemAtualizado.id}:`, error);
-        }
-      }));
-  
-      // Realizar o patch no CarrinhoService
-      await CarrinhoService.patchCarrinho({
-        id: user.carrinho.id,
-        item: user.carrinho.item.map(item => item.id),
-        endereco: user.carrinho.endereco.id
-      });
-  
+
+      await Promise.all(
+        itensAtualizados.map(async (itemAtualizado) => {
+          try {
+            await ItemService.updateItem({
+              id: itemAtualizado.id,
+              quantidade: itemAtualizado.quantidade,
+            });
+            console.log(`Item ${itemAtualizado.id} atualizado com sucesso.`);
+          } catch (error) {
+            console.error(
+              `Erro ao atualizar o item ${itemAtualizado.id}:`,
+              error
+            );
+          }
+        })
+      );
+
+      if (user.carrinho.item.map((item) => item.id).length != 0) {
+        await CarrinhoService.patchCarrinho({
+          id: user.carrinho.id,
+          item: user.carrinho.item.map((item) => item.id),
+          endereco_carrinho: user.carrinho.endereco_carrinho?.id,
+        });
+      } else {
+        await CarrinhoService.deleteCarrinho(user.carrinho);
+      }
+
       console.log("Alterações no carrinho salvas com sucesso!");
     } catch (error) {
       console.error("Erro ao salvar alterações no carrinho:", error);
     }
-  };
+  }
 
-  return (
-    <ScrollView style={styles.container}>
-      <Text>Seu Carrinho:</Text>
-      <View>
-        <View style={styles.listaCarrinho}>
-          {user?.carrinho.item.map((item) => (
-            <View key={item.id} style={styles.itemCarrinho}>
-              <Image
-                source={{ uri: item.produto.cover.file }}
-                style={styles.imagem}
-              />
-              <Text>
-                <li>{item.produto.nome}</li>
-                <li>Preço por {item.produto.unidade}</li>
-                <li>R$ {item.produto.preco}</li>
-                <li>{item.produto.categoria.descricao}</li>
-              </Text>
-              <View>
-                <Text> Quantidade </Text>
-                <View style={styles.inputView}>
-                  <TextInput
-                    style={styles.input}
-                    keyboardType="numeric"
-                    value={item.quantidade}
-                    onChangeText={(text) =>
-                      incrementQuantidade(item.id, Number(text))
-                    }
-                  />
-                </View>
-                <View style={styles.botoesQuantidade}>
-                  <TouchableOpacity
-                    style={styles.botao}
-                    onPress={() => incrementQuantidade(item.id)}
-                  >
-                    <Text>+</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.botao}
-                    onPress={() => decrementQuantidade(item.id)}
-                  >
-                    <Text>-</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <TouchableOpacity onPress={() => excluirItem(item.id)}>
-                <Text>X</Text>
-              </TouchableOpacity>
-            </View>
-          ))}
-        </View>
+  function calcularValorTotal() {
+    if (!user || !user.carrinho || !user.carrinho.item) {
+      return 0;
+    }
+
+    return user.carrinho.item.reduce((total, item) => {
+      return total + item.produto.preco * item.quantidade;
+    }, 0);
+  }
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [enderecoSelecionado, setEnderecoSelecionado] = useState(null);
+
+  function abrirModalEndereco() {
+    setModalVisible(true);
+  }
+
+  function fecharModalEndereco() {
+    setModalVisible(false);
+  }
+
+  function selecionarEndereco(endereco) {
+    setEnderecoSelecionado(endereco);
+    // Aqui você pode realizar qualquer lógica adicional necessária quando um endereço é selecionado.
+  }
+
+  if (!(!user || !user.carrinho)) {
+    return (
+      <ScrollView style={styles.container}>
+        <Text>Seu Carrinho:</Text>
+        <TouchableOpacity onPress={abrirModalEndereco}>
+          <Text>Selecione um endereço</Text>
+        </TouchableOpacity>
         <View>
-          <TouchableOpacity onPress={salvarAlteracoes}>
-            <Text>Salvar Alterações no Carrinho</Text>
-          </TouchableOpacity>
+          <View style={styles.listaCarrinho}>
+            <View>
+              <Text>Endereço Atual:</Text>
+              <Text>
+                <li>CEP: {user?.carrinho?.endereco_carrinho?.cep}</li>
+                <li>
+                  Complemento: {user?.carrinho?.endereco_carrinho?.complemento}
+                </li>
+                <li>Número: {user?.carrinho?.endereco_carrinho?.numero}</li>
+              </Text>
+            </View>
+            {user?.carrinho?.item.map((item) => (
+              <View key={item.id} style={styles.itemCarrinho}>
+                <Image
+                  source={{ uri: item.produto.cover.url }}
+                  style={styles.imagem}
+                />
+                <Text>
+                  <li>{item.produto.nome}</li>
+                  <li>
+                    R$ {item.produto.preco} por {item.produto.unidade}
+                  </li>
+                  <li>{item.produto.categoria.descricao}</li>
+                  <li>
+                    Total: R${(item.produto.preco * item.quantidade).toFixed(2)}
+                  </li>
+                </Text>
+                <View>
+                  <Text> Quantidade </Text>
+                  <View style={styles.inputView}>
+                    <TextInput
+                      style={styles.input}
+                      keyboardType="numeric"
+                      value={item.quantidade}
+                      onChangeText={(text) => {
+                        const updatedItems = user.carrinho.item.map((itemMap) =>
+                          itemMap.id === item.id
+                            ? { ...itemMap, quantidade: text }
+                            : itemMap
+                        );
+
+                        setUser({
+                          ...user,
+                          carrinho: { ...user.carrinho, item: updatedItems },
+                        });
+                      }}
+                    />
+                  </View>
+                  <View style={styles.unidade}>
+                    <Text>
+                      {item.produto.unidade.replace("Peso (KG)", "Quilo")}s
+                    </Text>
+                  </View>
+                  <View style={styles.botoesQuantidade}>
+                    <TouchableOpacity
+                      style={styles.botao}
+                      onPress={() => incrementQuantidade(item.id)}
+                    >
+                      <Text>+</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.botao}
+                      onPress={() => decrementQuantidade(item.id)}
+                    >
+                      <Text>-</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <TouchableOpacity onPress={() => excluirItem(item.id)}>
+                  <Text>X</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+            <View>
+              <Text>
+                Valor do carrinho: R${calcularValorTotal().toFixed(2)}{" "}
+              </Text>
+            </View>
+          </View>
+          <View>
+            <TouchableOpacity onPress={salvarAlteracoes}>
+              <Text>Salvar Alterações no Carrinho</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </ScrollView>
-  );
+        <ModalEndereco
+          isVisible={modalVisible}
+          onClose={fecharModalEndereco}
+          onSelectEndereco={selecionarEndereco}
+          enderecos={enderecos}
+        />
+      </ScrollView>
+    );
+  } else {
+    return (
+      <ScrollView style={styles.container}>
+        <Text>Seu Carrinho:</Text>
+
+        <View style={styles.vazio}>
+          <Text>Parece que seu carrinho está vazio!</Text>
+          <Text>Tente adicionar algum item à ele</Text>
+        </View>
+      </ScrollView>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -181,7 +274,6 @@ const styles = StyleSheet.create({
     width: 16,
     maxWidth: 16,
 
-
     height: 16,
     maxHeight: 16,
     borderRadius: 360,
@@ -202,4 +294,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  unidade: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  vazio:{
+    margin: 5,
+    padding: 3,
+    borderWidth: 2,
+    borderColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+  }
 });

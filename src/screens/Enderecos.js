@@ -40,7 +40,7 @@ export default function enderecos() {
 
   async function excluir(endereco) {
     await enderecoService.deleteEndereco(endereco);
-    const data = await enderecoService.getAllEnderecos();
+    const data = await enderecoService.getAllEnderecos(); 
     setEnderecos(data);
   }
 

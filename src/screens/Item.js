@@ -19,7 +19,6 @@ export default function Item({ route, navigation }) {
 
   const [items, setItems] = useState([]);
   const [cartItems, setCartItems] = useState([]);
-
   async function addCart() {
     const item = { produto: prod.id };
     const newItem = await itemService.saveItem(item);
@@ -27,19 +26,38 @@ export default function Item({ route, navigation }) {
 
     const UserLogado = await LoginApi.UserLogado();
 
-    const listaAtual = UserLogado[0].carrinho.item.map((item) => item.id);
-    const listaProdutosAtuais = UserLogado[0].carrinho.item.map((item) => item.produto.id);
-    if (listaProdutosAtuais.includes(newItem.produto)) {
-      alert("Esse item já está em seu carrinho!");
-    } else {
-      listaAtual.push(newItem.id);
+    if (UserLogado[0].carrinho == null) {
+      const UserLogado = await LoginApi.UserLogado();
 
-      const itemcarrinho = { id: UserLogado[0].carrinho.id, item: listaAtual, endereco: UserLogado[0].carrinho.endereco.id };
-      await carrinhoService.patchCarrinho(itemcarrinho); 
-      alert("Adicionado ao carrinho com sucesso!");
+      const carrinhoNovo = await carrinhoService.saveCarrinho({endereco_carrinho: UserLogado[0].endereco_usuario.id, item: [newItem.id]})
+      const novoCarrinho = {...UserLogado[0], carrinho_attachment_key: carrinhoNovo.id}
+      
+      await LoginApi.CriarCarrinho(novoCarrinho)
+
+      alert("Seu carrinho foi criado com sucesso! :D");
+
+    } else {
+      const listaAtual = UserLogado[0].carrinho.item.map((item) => item.id);
+      const listaProdutosAtuais = UserLogado[0].carrinho.item.map(
+        (item) => item.produto.id
+      );
+      if (listaProdutosAtuais.includes(newItem.produto)) {
+        alert("Esse item já está em seu carrinho!");
+      } else {
+        listaAtual.push(newItem.id);
+
+        const itemcarrinho = {
+          id: UserLogado[0].carrinho.id,
+          item: listaAtual,
+          endereco_carrinho: UserLogado[0].carrinho.endereco_carrinho.id,
+        };
+        await carrinhoService.patchCarrinho(itemcarrinho);
+        alert("Adicionado ao carrinho com sucesso!");
+      }
     }
   }
-
+  
+  
   return (
     <ScrollView showsVerticalScrollIndicator={true} style={styles.container}>
       <Text>{prod.id}</Text>

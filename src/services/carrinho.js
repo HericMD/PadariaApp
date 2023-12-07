@@ -2,7 +2,7 @@ import api from './api'
 
 class CarrinhoService {
   async getAllCarrinhos() {
-    const response = await api.get('/carrinho/')
+    const response = await api.get('/carrinho/') 
     return response.data
   }
   async saveCarrinho(carrinho) {

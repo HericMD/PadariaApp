@@ -24,7 +24,6 @@ export default function Perfil({ navigation }) {
     fetchUser();
   }, []);
 
-
   return (
     <ScrollView style={styles.container}>
       <View>
@@ -33,20 +32,13 @@ export default function Perfil({ navigation }) {
           <li>{user?.first_name}</li>
           <li>{user?.last_name}</li>
           <li>{user?.email}</li>
+          <Text>Seu endereço:</Text>
+          <li>CEP: {user?.endereco_usuario?.cep}</li>
+          <li>Complemento: {user?.endereco_usuario?.complemento}</li>
+          <li>Número: {user?.endereco_usuario?.numero}</li>
         </View>
         <Text></Text>
       </View>
-      <TouchableOpacity
-        style={styles.option}
-        onPress={() => navigation.navigate("Enderecos")}
-      >
-        <MaterialCommunityIcons name="map-marker" size={35} color="black" />
-        <ScrollView style={styles.info}>
-          <Text style={styles.title}>Endereços</Text>
-          <Text style={styles.description}>Meus endreços de entrega</Text>
-        </ScrollView>
-        <MaterialIcons name="keyboard-arrow-right" color="black" size={20} />
-      </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("Login")}>
         <Text>Sair</Text>
       </TouchableOpacity>
