@@ -10,7 +10,7 @@ import {
   Button,
 } from "react-native";
 
-import produtoService from "../../services/produtos";
+import produtoService from "../../services/produtos"; 
 
 export default function produtos({ navigation }) { 
   const [produtos, setProdutos] = useState([]);
@@ -18,6 +18,7 @@ export default function produtos({ navigation }) {
   useEffect(async () => {
     const data = await produtoService.getAllProdutos();
     setProdutos(data);
+    console.log(data)
   }, []);
 
   return (

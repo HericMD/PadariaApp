@@ -13,6 +13,10 @@ class ProdutoService {
     const response = await api.delete(`/produto/${produto.id}/`)
     return response.data
   }
+  async getProdutosByID(id) {
+    const response = await api.get(`/produto/?categoria=${id}`)
+    return response.data
+  }
 }
 
 export default new ProdutoService()
