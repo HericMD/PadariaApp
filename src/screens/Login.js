@@ -17,7 +17,8 @@ export default function Login({ navigation }) {
 
   const login = async () => {
     try {
-      const data = await loginApi.login(email, password);
+      // const data = await loginApi.login(email, password);
+      const data = await loginApi.login("admin@gmail.com", "admin");
       setUser({
         loggedIn: true,
         access: data.access,
@@ -26,7 +27,6 @@ export default function Login({ navigation }) {
       setEmail('');
       setPassword('');
       setErrorMsg(null);
-      // await SecureStore.setItemAsync('access', data.access);
 
       if(true){
         const UserLogado = await loginApi.UserLogado();

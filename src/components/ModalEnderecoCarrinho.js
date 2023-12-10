@@ -28,9 +28,13 @@ const ModalEndereco = ({ isVisible, onClose, onSelectEndereco }) => {
 
   async function adicionar() {
     const UserLogado = await LoginApi.UserLogado();
-    const semCarrinho = (UserLogado[0].endereco_usuario.id == UserLogado[0].carrinho.endereco_carrinho.id)
+    const semCarrinho =
+      UserLogado[0].endereco_usuario.id ==
+      UserLogado[0].carrinho.endereco_carrinho.id;
     if (semCarrinho) {
-      const novoEndereco = await EnderecoService.saveEndereco(enderecoAtualizado);
+      const novoEndereco = await EnderecoService.saveEndereco(
+        enderecoAtualizado
+      );
       const endereconovo = {
         id: UserLogado[0].carrinho.id,
         item: UserLogado[0].carrinho.item.map((item) => item.id),
@@ -38,9 +42,12 @@ const ModalEndereco = ({ isVisible, onClose, onSelectEndereco }) => {
       };
       await CarrinhoService.patchCarrinho(endereconovo);
       alert("Endereco alterado com sucesso! (Recarregue para ver alterações)");
-    } else{
-        const enderecoAtualizadoComID = { ...enderecoAtualizado, id: UserLogado[0].carrinho.endereco_carrinho.id}
-        await EnderecoService.updateEndereco(enderecoAtualizadoComID);
+    } else {
+      const enderecoAtualizadoComID = {
+        ...enderecoAtualizado,
+        id: UserLogado[0].carrinho.endereco_carrinho.id,
+      };
+      await EnderecoService.updateEndereco(enderecoAtualizadoComID);
       alert("Endereco alterado com sucesso! (Recarregue para ver alterações)");
     }
   }
@@ -55,12 +62,14 @@ const ModalEndereco = ({ isVisible, onClose, onSelectEndereco }) => {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View>
-            <Text>Endereço Atual do Carrinho:</Text>
-            <Text>
-              <li>CEP: {user?.carrinho?.endereco_carrinho?.cep}</li>
-              <li>Complemento: {user?.carrinho?.endereco_carrinho?.complemento}</li>
-              <li>Número: {user?.carrinho?.endereco_carrinho?.numero}</li>
-            </Text>
+            <View>
+              <Text>Endereço Atual do Carrinho:</Text>
+              <Text>CEP: {user?.carrinho?.endereco_carrinho?.cep}</Text>
+              <Text>
+                Complemento: {user?.carrinho?.endereco_carrinho?.complemento}
+              </Text>
+              <Text>Número: {user?.carrinho?.endereco_carrinho?.numero}</Text>
+            </View>
           </View>
           <Text>Selecione um endereço:</Text>
           <View style={styles.addendereco}>
@@ -79,14 +88,19 @@ const ModalEndereco = ({ isVisible, onClose, onSelectEndereco }) => {
               style={styles.input}
               value={enderecoAtualizado.complemento}
               onChangeText={(text) =>
-                setEnderecoAtualizado({ ...enderecoAtualizado, complemento: text })
+                setEnderecoAtualizado({
+                  ...enderecoAtualizado,
+                  complemento: text,
+                })
               }
               placeholder=" Complemento"
             />
             <TextInput
               style={styles.input}
               value={enderecoAtualizado.cep}
-              onChangeText={(text) => setEnderecoAtualizado({ ...enderecoAtualizado, cep: text })}
+              onChangeText={(text) =>
+                setEnderecoAtualizado({ ...enderecoAtualizado, cep: text })
+              }
               placeholder=" Cep"
               keyboardType="numeric"
             />
@@ -108,6 +122,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22,
+    flexDirection: "column",
   },
   modalView: {
     margin: 20,
@@ -123,6 +138,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    flexDirection: "column",
   },
 });
 

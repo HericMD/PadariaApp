@@ -44,9 +44,7 @@ const ModalEndereco = ({ isVisible, onClose, onSelectEndereco }) => {
         ...enderecoAtualizado,
         id: UserLogado[0].endereco_usuario.id,
       };
-      await EnderecoService.updateEndereco(
-        enderecoAtualizadoComID
-      );
+      await EnderecoService.updateEndereco(enderecoAtualizadoComID);
       alert("Endereco alterado com sucesso! (Recarregue para ver alterações)");
     }
   }
@@ -61,12 +59,12 @@ const ModalEndereco = ({ isVisible, onClose, onSelectEndereco }) => {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View>
-            <Text>Endereço Pessoal Atual:</Text>
-            <Text>
-              <li>CEP: {user?.endereco_usuario?.cep}</li>
-              <li>Complemento: {user?.endereco_usuario?.complemento}</li>
-              <li>Número: {user?.endereco_usuario?.numero}</li>
-            </Text>
+            <View>
+              <Text>Endereço Pessoal Atual:</Text>
+              <Text>CEP: {user?.endereco_usuario?.cep}</Text>
+              <Text>Complemento: {user?.endereco_usuario?.complemento}</Text>
+              <Text>Número: {user?.endereco_usuario?.numero}</Text>
+            </View>
           </View>
           <Text>Selecione um endereço:</Text>
           <View style={styles.addendereco}>
@@ -119,6 +117,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22,
+    flexDirection: "column",
   },
   modalView: {
     margin: 20,
@@ -134,6 +133,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    flexDirection: "column",
   },
 });
 

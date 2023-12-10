@@ -12,7 +12,6 @@ import Perfil from "./screens/Perfil";
 import Pedidos from "./screens/Pedidos";
 import Item from "./screens/Item";
 import CategoriaItem from "./screens/CategoriaItem";
-import Enderecos from "./screens/Enderecos";
 import Login from "./screens/Login";
 import Cadastro from "./screens/Cadastro";
 
@@ -91,14 +90,7 @@ function PerfilRoutes() {
           headerTitleStyle: { color: "white" },
         }}
       />
-      <Stack.Screen
-        name="Enderecos"
-        component={Enderecos}
-        options={{
-          headerStyle: { backgroundColor: "black" },
-          headerTitleStyle: { color: "white" },
-        }}
-      />
+    
       <Stack.Screen
         name="Login"
         component={Login}

@@ -12,8 +12,6 @@ import LoginApi from "../services/login";
 import itemService from "../services/item";
 import carrinhoService from "../services/carrinho";
 
-const UserLogado = await LoginApi.UserLogado();
-
 export default function Item({ route, navigation }) {
   const { prod } = route.params;
 
@@ -46,7 +44,7 @@ export default function Item({ route, navigation }) {
         await LoginApi.CriarCarrinho(novoCarrinho);
 
         alert("Seu carrinho foi criado com sucesso! :D");
-      }
+      };
     } else {
       const listaAtual = UserLogado[0].carrinho.item.map((item) => item.id);
       const listaProdutosAtuais = UserLogado[0].carrinho.item.map(
@@ -64,9 +62,9 @@ export default function Item({ route, navigation }) {
         };
         await carrinhoService.patchCarrinho(itemcarrinho);
         alert("Adicionado ao carrinho com sucesso!");
-      }
-    }
-  }
+      };
+    };
+  };
 
   return (
     <ScrollView showsVerticalScrollIndicator={true} style={styles.container}>

@@ -15,8 +15,6 @@ import CarrinhoService from "../services/carrinho";
 import ItemService from "../services/item";
 import ModalEndereco from "../components/ModalEnderecoCarrinho";
 
-const UserLogado = await LoginApi.UserLogado();
-
 export default function Carrinho({ navigation }) {
   const [user, setUser] = useState(null);
   const [enderecos, setEnderecos] = useState([]);
@@ -133,14 +131,14 @@ export default function Carrinho({ navigation }) {
         <View>
           <View style={styles.listaCarrinho}>
             <View style={styles.endereco}>
-              <Text>
-                Endereço Atual:
-                <li>CEP: {user?.carrinho?.endereco_carrinho?.cep}</li>
-                <li>
+              <View>
+                <Text>Endereço Atual:</Text>
+                <Text>CEP: {user?.carrinho?.endereco_carrinho?.cep}</Text>
+                <Text>
                   Complemento: {user?.carrinho?.endereco_carrinho?.complemento}
-                </li>
-                <li>Número: {user?.carrinho?.endereco_carrinho?.numero}</li>
-              </Text>
+                </Text>
+                <Text>Número: {user?.carrinho?.endereco_carrinho?.numero}</Text>
+              </View>
             </View>
             {user?.carrinho?.item.map((item) => (
               <View key={item.id} style={styles.itemCarrinho}>
@@ -148,23 +146,23 @@ export default function Carrinho({ navigation }) {
                   source={{ uri: item.produto.cover.url }}
                   style={styles.imagem}
                 />
-                <Text>
-                  <li>{item.produto.nome}</li>
-                  <li>
+                <View>
+                  <Text>{item.produto.nome}</Text>
+                  <Text>
                     R$ {item.produto.preco} por {item.produto.unidade}
-                  </li>
-                  <li>{item.produto.categoria.descricao}</li>
-                  <li>
+                  </Text>
+                  <Text>{item.produto.categoria.descricao}</Text>
+                  <Text>
                     Total: R${(item.produto.preco * item.quantidade).toFixed(2)}
-                  </li>
-                </Text>
+                  </Text>
+                </View>
                 <View>
                   <Text> Quantidade </Text>
                   <View style={styles.inputView}>
                     <TextInput
                       style={styles.input}
                       keyboardType="numeric"
-                      value={item.quantidade}
+                      value={item.quantidade.toString()}
                       onChangeText={(text) => {
                         const updatedItems = user.carrinho.item.map((itemMap) =>
                           itemMap.id === item.id
@@ -251,6 +249,7 @@ const styles = StyleSheet.create({
     padding: 3,
     borderWidth: 2,
     borderColor: "black",
+    flexDirection: "column",
   },
   endereco: {
     margin: 5,
@@ -261,6 +260,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "black",
     backgroundColor: "white",
+    flexDirection: "column",
   },
   itemCarrinho: {
     flex: 1,
@@ -284,25 +284,23 @@ const styles = StyleSheet.create({
   },
   botao: {
     margin: 2,
-    padding: 10,
     borderWidth: 1,
-    width: 16,
-    maxWidth: 16,
-
-    height: 16,
-    maxHeight: 16,
+    width: 26,
+    height: 26,
     borderRadius: 360,
     alignItems: "center",
     justifyContent: "center",
     color: "white",
     backgroundColor: "orange",
+    flexDirection: "column",
   },
   input: {
-    borderWidth: 1,
-    borderRadius: 3,
-    padding: 1.5,
-    width: 33,
-    height: 15,
+    // borderWidth: 1,
+    // borderRadius: 3,
+    // padding: 1.5,
+    // width: 9,
+    // height: 17,
+    flexDirection: "column",
   },
   inputView: {
     flex: 1,
@@ -312,6 +310,7 @@ const styles = StyleSheet.create({
   unidade: {
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "column",
   },
 
   vazio: {
@@ -322,6 +321,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
+    flexDirection: "column",
   },
   salvar: {
     alignItems: "center",
@@ -335,5 +335,6 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 12,
     marginBottom: 12,
+    flexDirection: "column",
   },
 });
