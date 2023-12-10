@@ -17,8 +17,7 @@ export default function Login({ navigation }) {
 
   const login = async () => {
     try {
-      // const data = await loginApi.login(email, password);
-      const data = await loginApi.login("admin@gmail.com", "admin");
+      const data = await loginApi.login(email, password);
       setUser({
         loggedIn: true,
         access: data.access,
