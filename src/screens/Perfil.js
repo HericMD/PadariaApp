@@ -11,9 +11,11 @@ import {
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 import LoginApi from "../services/login";
+import ModalEndereco from "../components/ModalEnderecoPessoal";
 
 export default function Perfil({ navigation }) {
   const [user, setUser] = useState(null);
+  const [enderecoAtualizado, setEnderecoAtualizado] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -24,25 +26,44 @@ export default function Perfil({ navigation }) {
     fetchUser();
   }, []);
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [enderecoSelecionado, setEnderecoSelecionado] = useState(null);
+
+  function abrirModalEndereco() {
+    setModalVisible(true);
+  }
+
+  function fecharModalEndereco() {
+    setModalVisible(false);
+  }
+
+  function selecionarEndereco(endereco) {
+    setEnderecoSelecionado(endereco);
+  }
+
   return (
-    <ScrollView style={styles.container}>
-      <View>
-        <Image source={{ uri: user?.foto?.url }} style={styles.foto} />
-        <View style={styles.nome}>
-          <li>{user?.first_name}</li>
-          <li>{user?.last_name}</li>
-          <li>{user?.email}</li>
-          <Text>Seu endereço:</Text>
-          <li>CEP: {user?.endereco_usuario?.cep}</li>
-          <li>Complemento: {user?.endereco_usuario?.complemento}</li>
-          <li>Número: {user?.endereco_usuario?.numero}</li>
-        </View>
-        <Text></Text>
+    <View style={styles.container}>
+      <Image source={{ uri: user?.foto?.url }} style={styles.foto} />
+      <View style={styles.infos}>
+        <Text>Nome: {user?.first_name}</Text>
+        <Text>Sobrenome: {user?.last_name}</Text>
+        <Text>Email: {user?.email}</Text>
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-        <Text>Sair</Text>
+      <View style={styles.endereco}>
+        <Text>Seu endereço:</Text>
+        <Text>CEP: {user?.endereco_usuario?.cep}</Text>
+        <Text>Complemento: {user?.endereco_usuario?.complemento}</Text>
+        <Text>Número: {user?.endereco_usuario?.numero}</Text>
+      </View>
+      <TouchableOpacity onPress={abrirModalEndereco} style={styles.botao}>
+        <Text>Trocar endereço</Text>
       </TouchableOpacity>
-    </ScrollView>
+      <ModalEndereco
+        isVisible={modalVisible}
+        onClose={fecharModalEndereco}
+        onSelectEndereco={selecionarEndereco}
+      />
+    </View>
   );
 }
 
@@ -81,8 +102,25 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     marginRight: "auto",
   },
-  nome: {
+  infos: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+  },
+  endereco: {
     alignItems: "center",
     justifyContent: "center",
   },
+  botao:{
+    alignItems: "center",
+    justifyContent: "center",
+    alignContent: "center",
+    marginTop: 10,
+    marginLeft: "auto",
+    marginRight: "auto",
+    backgroundColor: "orange",
+    borderWidth: 1,
+    padding: 4,
+    borderRadius: 12,
+  }
 });

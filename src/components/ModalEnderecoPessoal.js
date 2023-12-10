@@ -11,7 +11,7 @@ import {
 
 import LoginApi from "../services/login";
 import EnderecoService from "../services/enderecos";
-import CarrinhoService from "../services/carrinho";
+import UsuarioService from "../services/usuario";
 
 const ModalEndereco = ({ isVisible, onClose, onSelectEndereco }) => {
   const [user, setUser] = useState(null);
@@ -28,32 +28,25 @@ const ModalEndereco = ({ isVisible, onClose, onSelectEndereco }) => {
 
   async function adicionar() {
     const UserLogado = await LoginApi.UserLogado();
-    console.log(enderecoAtualizado)
-    console.log(UserLogado[0].endereco_usuario)
-    console.log(UserLogado[0])
-    console.log(UserLogado[0].carrinho.endereco_carrinho)
-    const teste = (UserLogado[0].endereco_usuario.id == UserLogado[0].carrinho.endereco_carrinho.id)
-    console.log(teste)
-    if (teste) {
-        console.log("post eu acho")
-      const novoEndereco = await EnderecoService.saveEndereco(enderecoAtualizado);
+    console.log(UserLogado[0].endereco_usuario);
+    if (UserLogado[0].endereco_usuario == null) {
+      const novoEndereco = await EnderecoService.saveEndereco(
+        enderecoAtualizado
+      );
       const endereconovo = {
-        id: UserLogado[0].carrinho.id,
-        item: UserLogado[0].carrinho.item.map((item) => item.id),
-        endereco_carrinho: novoEndereco.id,
+        ...UserLogado[0],
+        endereco_attachment_key: novoEndereco.id,
       };
-      await CarrinhoService.patchCarrinho(endereconovo);
+      await UsuarioService.updateUsuario(endereconovo);
       alert("Endereco alterado com sucesso! (Recarregue para ver alterações)");
-    } else{
-        console.log("put eu acho")
-        const enderecoAtualizadoComID = { ...enderecoAtualizado, id: UserLogado[0].carrinho.endereco_carrinho.id}
-        const novoEndereco = await EnderecoService.updateEndereco(enderecoAtualizadoComID);
-      const endereconovo = {
-        id: UserLogado[0].carrinho.id,
-        item: UserLogado[0].carrinho.item.map((item) => item.id),
-        endereco_carrinho: novoEndereco.id,
+    } else {
+      const enderecoAtualizadoComID = {
+        ...enderecoAtualizado,
+        id: UserLogado[0].endereco_usuario.id,
       };
-      await CarrinhoService.patchCarrinho(endereconovo);
+      await EnderecoService.updateEndereco(
+        enderecoAtualizadoComID
+      );
       alert("Endereco alterado com sucesso! (Recarregue para ver alterações)");
     }
   }
@@ -68,11 +61,11 @@ const ModalEndereco = ({ isVisible, onClose, onSelectEndereco }) => {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View>
-            <Text>Endereço Atual:</Text>
+            <Text>Endereço Pessoal Atual:</Text>
             <Text>
-              <li>CEP: {user?.carrinho?.endereco_carrinho?.cep}</li>
-              <li>Complemento: {user?.carrinho?.endereco_carrinho?.complemento}</li>
-              <li>Número: {user?.carrinho?.endereco_carrinho?.numero}</li>
+              <li>CEP: {user?.endereco_usuario?.cep}</li>
+              <li>Complemento: {user?.endereco_usuario?.complemento}</li>
+              <li>Número: {user?.endereco_usuario?.numero}</li>
             </Text>
           </View>
           <Text>Selecione um endereço:</Text>
@@ -92,14 +85,19 @@ const ModalEndereco = ({ isVisible, onClose, onSelectEndereco }) => {
               style={styles.input}
               value={enderecoAtualizado.complemento}
               onChangeText={(text) =>
-                setEnderecoAtualizado({ ...enderecoAtualizado, complemento: text })
+                setEnderecoAtualizado({
+                  ...enderecoAtualizado,
+                  complemento: text,
+                })
               }
               placeholder=" Complemento"
             />
             <TextInput
               style={styles.input}
               value={enderecoAtualizado.cep}
-              onChangeText={(text) => setEnderecoAtualizado({ ...enderecoAtualizado, cep: text })}
+              onChangeText={(text) =>
+                setEnderecoAtualizado({ ...enderecoAtualizado, cep: text })
+              }
               placeholder=" Cep"
               keyboardType="numeric"
             />

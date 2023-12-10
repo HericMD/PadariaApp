@@ -13,7 +13,7 @@ import {
 import LoginApi from "../services/login";
 import CarrinhoService from "../services/carrinho";
 import ItemService from "../services/item";
-import ModalEndereco from "../components/ModalEndereco";
+import ModalEndereco from "../components/ModalEnderecoCarrinho";
 
 const UserLogado = await LoginApi.UserLogado();
 
@@ -54,6 +54,10 @@ export default function Carrinho({ navigation }) {
     );
 
     setUser({ ...user, carrinho: { ...user.carrinho, item: updatedItems } });
+  }
+
+  function Processar() {
+    alert("seu pedido está sendo processado");
   }
 
   async function salvarAlteracoes() {
@@ -118,21 +122,19 @@ export default function Carrinho({ navigation }) {
 
   function selecionarEndereco(endereco) {
     setEnderecoSelecionado(endereco);
-    // Aqui você pode realizar qualquer lógica adicional necessária quando um endereço é selecionado.
   }
 
   if (!(!user || !user.carrinho)) {
     return (
       <ScrollView style={styles.container}>
-        <Text>Seu Carrinho:</Text>
-        <TouchableOpacity onPress={abrirModalEndereco}>
+        <TouchableOpacity onPress={abrirModalEndereco} style={styles.salvar}>
           <Text>Selecione um endereço</Text>
         </TouchableOpacity>
         <View>
           <View style={styles.listaCarrinho}>
-            <View>
-              <Text>Endereço Atual:</Text>
+            <View style={styles.endereco}>
               <Text>
+                Endereço Atual:
                 <li>CEP: {user?.carrinho?.endereco_carrinho?.cep}</li>
                 <li>
                   Complemento: {user?.carrinho?.endereco_carrinho?.complemento}
@@ -209,8 +211,11 @@ export default function Carrinho({ navigation }) {
             </View>
           </View>
           <View>
-            <TouchableOpacity onPress={salvarAlteracoes}>
+            <TouchableOpacity onPress={salvarAlteracoes} style={styles.salvar}>
               <Text>Salvar Alterações no Carrinho</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={Processar} style={styles.salvar}>
+              <Text>Comprar o carrinho</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -246,6 +251,16 @@ const styles = StyleSheet.create({
     padding: 3,
     borderWidth: 2,
     borderColor: "black",
+  },
+  endereco: {
+    margin: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    alignContent: "center",
+    padding: 3,
+    borderWidth: 2,
+    borderColor: "black",
+    backgroundColor: "white",
   },
   itemCarrinho: {
     flex: 1,
@@ -299,7 +314,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  vazio:{
+  vazio: {
     margin: 5,
     padding: 3,
     borderWidth: 2,
@@ -307,5 +322,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
-  }
+  },
+  salvar: {
+    alignItems: "center",
+    justifyContent: "center",
+    alignContent: "center",
+    marginTop: 10,
+    marginLeft: "auto",
+    marginRight: "auto",
+    backgroundColor: "orange",
+    borderWidth: 1,
+    padding: 4,
+    borderRadius: 12,
+    marginBottom: 12,
+  },
 });

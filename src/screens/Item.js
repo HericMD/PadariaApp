@@ -29,13 +29,24 @@ export default function Item({ route, navigation }) {
     if (UserLogado[0].carrinho == null) {
       const UserLogado = await LoginApi.UserLogado();
 
-      const carrinhoNovo = await carrinhoService.saveCarrinho({endereco_carrinho: UserLogado[0].endereco_usuario.id, item: [newItem.id]})
-      const novoCarrinho = {...UserLogado[0], carrinho_attachment_key: carrinhoNovo.id}
-      
-      await LoginApi.CriarCarrinho(novoCarrinho)
+      const carrinhoNovo = await carrinhoService.saveCarrinho({
+        ...UserLogado[0].endereco_carrinho,
+        item: [newItem.id],
+      });
+      const novoCarrinho = {
+        ...UserLogado[0],
+        carrinho_attachment_key: carrinhoNovo.id,
+      };
 
-      alert("Seu carrinho foi criado com sucesso! :D");
+      if (UserLogado[0].endereco_usuario == null) {
+        alert(
+          "ops... Parece que você ainda não tem um endereço, crie um endereço em seu perfil para adicionar itens ao seu carrinho!"
+        );
+      } else {
+        await LoginApi.CriarCarrinho(novoCarrinho);
 
+        alert("Seu carrinho foi criado com sucesso! :D");
+      }
     } else {
       const listaAtual = UserLogado[0].carrinho.item.map((item) => item.id);
       const listaProdutosAtuais = UserLogado[0].carrinho.item.map(
@@ -56,8 +67,7 @@ export default function Item({ route, navigation }) {
       }
     }
   }
-  
-  
+
   return (
     <ScrollView showsVerticalScrollIndicator={true} style={styles.container}>
       <Text>{prod.id}</Text>
